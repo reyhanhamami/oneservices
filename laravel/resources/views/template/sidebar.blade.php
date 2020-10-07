@@ -28,9 +28,9 @@
                     <i class="fas fa-book"></i> <span class="nav-text">Data</span>
                 </a>
                 <ul aria-expanded="false">
-                    <li><a href="./email-inbox.html">Inbox</a></li>
-                    <li><a href="./email-read.html">Read</a></li>
-                    <li><a href="./email-compose.html">Compose</a></li>
+                    <li><a href="{{route('admin.datawakif')}}">Wakif</a></li>
+                    {{-- <li><a href="./email-read.html">Read</a></li> --}}
+                    {{-- <li><a href="./email-compose.html">Compose</a></li> --}}
                 </ul>
             </li>
             {{-- <li>

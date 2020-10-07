@@ -6,8 +6,8 @@
     <div class="card">
         <div class="card-body">
             <h4 class="card-title">Table Campaign</h4>
-            <button class="btn btn-primary btn-small upload"><i class="fas fa-angle-double-up"> Upload excel</i></button>
-            <a href="{{url('assets\uploadcampaign.xlsx')}}" class="btn btn-info btn-small" download><i class="fas fa-angle-double-down"> Download format</i></a>
+            <button type="button" class="btn mb-1 btn-rounded btn-success upload"><span class="btn-icon-left"><i class="fas fa-angle-double-up"></i> </span>Upload</button>
+            <a href="{{url('public\assets\uploadcampaign.xlsx')}}" class="btn mb-1 btn-rounded btn-primary" download><span class="btn-icon-left"><i class="fas fa-download"></i> </span>Download format</a>
             <div class="table-responsive"> 
                 <table class="table table-bordered table-striped verticle-middle">
                     <thead>

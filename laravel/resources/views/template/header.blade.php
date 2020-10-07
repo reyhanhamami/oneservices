@@ -5,16 +5,21 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>BWA - Call Agent</title>
+    <!-- select2  -->
+    <link href="{{url('public/assets/plugins/select2/css/select2.min.css')}}" rel="stylesheet" />
+    <!-- sweet alert  -->
+    <link href="{{url('public/assets/plugins/sweetalert/css/sweetalert.css')}}" rel="stylesheet" />
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{url('assets/images/icon-W.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{url('public/assets/images/icon-W.png')}}">
     <!-- Pignose Calender -->
-    <link href="{{url('assets/plugins/pg-calendar/css/pignose.calendar.min.css')}}" rel="stylesheet">
+    <link href="{{url('public/assets/plugins/pg-calendar/css/pignose.calendar.min.css')}}" rel="stylesheet">
     <!-- Chartist -->
-    <link rel="stylesheet" href="{{url('assets/plugins/chartist/css/chartist.min.css')}}">
-    <link rel="stylesheet" href="{{url('assets/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css')}}">
+    <link rel="stylesheet" href="{{url('public/assets/plugins/chartist/css/chartist.min.css')}}">
+    <link rel="stylesheet" href="{{url('public/assets/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css')}}">
     <!-- Custom Stylesheet -->
-    <link href="{{url('assets/css/style.css')}}" rel="stylesheet">
+    <link href="{{url('public/assets/css/style.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/v4-shims.css">
     @stack('css')
@@ -49,11 +54,11 @@
         <div class="nav-header">
             <div class="brand-logo">
                 <a href="index.html">
-                    <b class="logo-abbr"><img src="{{url('assets/images/logo.png')}}" alt=""> </b>
-                    <span class="logo-compact"><img src="{{url('assets/images/logo-compact.png')}}" alt=""></span>
+                    <b class="logo-abbr text-white">BWA</b>
+                    <span class="logo-compact"><img src="{{url('public/assets/images/logo-compact.png')}}" alt=""></span>
                     <span class="brand-title">
                         <h5 class="text-white">Badan Wakaf Al-Quran</h5>
-                        {{-- <img src="{{url('assets/images/bwatrasnparent.png')}}" alt="" width="50"> --}}
+                        {{-- <img src="{{url('public/assets/images/bwatrasnparent.png')}}" alt="" width="50"> --}}
                     </span>
                 </a>
             </div>
@@ -78,7 +83,7 @@
                         <li class="icons dropdown">
                             <div class="user-img c-pointer position-relative"   data-toggle="dropdown">
                                 <span class="activity active"></span>
-                                <img src="{{('assets/images/icon-W.png')}}" height="40" width="40" alt="">
+                                <img src="{{url('public/assets/images/icon-W.png')}}" height="40" width="40" alt="">
                             </div>
                             {{-- <div class="drop-down dropdown-profile animated fadeIn dropdown-menu">
                                 <div class="dropdown-content-body">

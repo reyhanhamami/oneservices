@@ -45,7 +45,6 @@ class homeController extends Controller
                         ->update([
                             'campaignId_3cx' => $t['nama_campaign'],
                             '3cx_callPriority' => $t['prioritas_di_telpon'],
-                            '3cx_queue' => $t['extension'],
                             '3cx_callStatus' => '0',
                             '3cx_callResult' => 'False'
                         ]);
