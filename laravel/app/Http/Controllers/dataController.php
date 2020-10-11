@@ -20,7 +20,7 @@ class dataController extends Controller
                     ->select('CustomerNo','CustomerName','MobilePhone','customeremail','address');
             return Datatables::of($data)
                     ->addColumn('action', function($row){
-                        $btn = "<a href='../../oneservice/datawakif/donasi/".$row->MobilePhone."' class='edit btn btn-primary btn-sm'>Donasi</a>";
+                        $btn = "<a href='../../oneservice/datawakif/history/".$row->CustomerNo."' class='edit btn btn-primary btn-sm'>Donasi</a>";
                         return $btn;
                     })
                     ->rawColumns(['action'])
@@ -33,34 +33,27 @@ class dataController extends Controller
         return view('data.donasi');
     }
     public function simpandonasi(Request $request){
+        // datetime 
+        $datetime = date('Y-m-d H:i:s');
         // nokwitansi 
         $nokwi = "TF-".date('YmdHis');
-        // total 
-        $total = 0;
-        foreach ($request->program as $key => $prog) {
-            $qty = $request[0]['qty'];
-            $dana = $request->dana;
-            $jumlah = (int)$qty * (int)$dana;
-            dd($qty);
-            $jumlah += $jumlah;
-            $total = $jumlah; 
-        }
-        
+        // nama image 
+        $image = null;    
         if ($request->pict) {
             $images = $request->file('pict');
             // kasihnama 
             $nama = date("Y-m-d,His").'.'.$images->getClientOriginalExtension();
             // lokasi naro bukti 
-            $lokasi = public_path('public/assets/images/bukti');
+            $lokasi = 'C:\wamp64\www\oneservice\public\assets\images\bukti';
             // jika folder bukti tidak ada maka buat 
             if (!file_exists($lokasi)) {
                 mkdir($lokasi);
             }
             // pindahin imagenya 
-            $images->move($lokasi.'/'.$nama);
-
-            $data['bukti'] = $nama;
-        } else {
+            $request->pict->move($lokasi,$nama);
+            $image = $nama;
+     
+        } 
             // insert ke table tdonasi 
             $tdonasi = new donasi;
             $tdonasi->no_kwitansi = $nokwi;
@@ -68,54 +61,53 @@ class dataController extends Controller
             $tdonasi->kd_kas = $request->pembayaran;
             $tdonasi->kd_pelanggan = $request->kd_pelanggan;
             $tdonasi->kd_agen = '1';
-            $tdonasi->tgl = $request->tgltra ;
-            $tdonasi->total = $request->total ;
+            $tdonasi->tgl = $request->tgltra;
+            $tdonasi->total = $request->total;
             $tdonasi->sah  = 0;
-            $tdonasi->kd_tkm  = $ac_tkm->kd_tkm;
-            $tdonasi->uid = Auth::user()->nm_login;
+            $tdonasi->kd_tkm  = NULL;
+            $tdonasi->uid = '1';
             $tdonasi->tgl_tambah = $datetime;
-            $tdonasi->uid_edit = Auth::user()->nm_login ;
+            $tdonasi->uid_edit = '1' ;
             $tdonasi->tgl_edit = $datetime ;
-            $tdonasi->ket = 'Uji Coba Reyhan' ;
-            $tdonasi->tgl_transaksi = $tgl_transaksi_time;
+            $tdonasi->ket = 'Telefundraising' ;
+            $tdonasi->tgl_transaksi = $request->tglset;
             $tdonasi->kd_sales = "";
             $tdonasi->posting = 1 ;
-            $tdonasi->sumber = 'uji_coba_reyhan' ;
+            $tdonasi->sumber = 'Telefundraising' ;
             $tdonasi->fkd_akun = NULL ;
             $tdonasi->fjenis_aktivitas = NULL ;
             $tdonasi->fsub_jenis_aktivitas = NULL ;
-            $tdonasi->fnm_pendaftar = ''   ;
+            $tdonasi->fnm_pendaftar = '';
             $tdonasi->kd_cabang = $request->cabang  ;
-            $tdonasi->alur_kerja = $request->alur_kerja ;
+            $tdonasi->alur_kerja = 'ENTRI' ;
             $tdonasi->biaya_bank = $request->biaya_bank ;
             $tdonasi->konfirmasi  = NULL;
             $tdonasi->tgl_konfirmasi = NULL ;
             $tdonasi->catatan_konfirmasi  = NULL;
             $tdonasi->update_project = NULL ;
+            $tdonasi->bukti = $image ;
             $tdonasi->save();
             
             // looping berdasarkan banyaknya milih program 
             // insert ke table tdonasi_dtl
-            foreach ($request->mprogram as $index => $program) {
+            foreach ($request->program as $index => $program) {
                 $tdonasi_dtl = new donasi_dtl ;
-                $tdonasi_dtl->no_kwitansi = $request->no_kwitansi ;
-                $tdonasi_dtl->kd_program = $request->mprogram[$index];
-                $tdonasi_dtl->kd_project = $request->mproject[$index];
+                $tdonasi_dtl->no_kwitansi = $nokwi;
+                $tdonasi_dtl->kd_program = $request->program[$index];
+                $tdonasi_dtl->kd_project = $request->project[$index];
                 $tdonasi_dtl->qty = $request->qty[$index];
-                $tdonasi_dtl->jmh = $request->jmh[$index];
+                $tdonasi_dtl->jmh = $request->jumlah[$index];
                 $tdonasi_dtl->fid_program = NULL ;
                 $tdonasi_dtl->fid_sub_program = NULL ;
                 $tdonasi_dtl->fqty = NULL;
                 $tdonasi_dtl->fharga = NULL;
                 $tdonasi_dtl->frealisasi = NULL;
                 $tdonasi_dtl->fid_detail = NULL ;
-                $tdonasi_dtl->sumber = 'uji_coba_reyhan' ;
+                $tdonasi_dtl->sumber = 'Fundraising' ;
                 $tdonasi_dtl->save();
             }
-        }
-
-
-
+        
+        return redirect()->back();
     }
 
     public function popupcus(Request $request){
@@ -161,7 +153,15 @@ class dataController extends Controller
         $carilast = DB::connection('mysqltwo')->table('call_journaling')->where('phone',$phone)->orderBy('id','desc')->pluck('id')->first();
         // update catatan last id 
         call_journaling::whereId($carilast)->update([
-            'Call_note' => $request->note
+            'Call_note' => $request->note,
+            'status_call' => $request->status_call,
         ]);
+    }
+
+    public function history($id){
+        $donasi = donasi::where('kd_pelanggan','=',$id)->get();
+        $phone = customer::where('CustomerNo',$id)->pluck('MobilePhone')->first();
+        $nama = customer::where('CustomerNo',$id)->pluck('CustomerName')->first();
+        return view('data.historywakif', compact(['donasi','phone','nama']));
     }
 }

@@ -94,9 +94,19 @@
                         <div class="col-5">
                             {{-- <h4 class="card-title">Update status pembicaraan</h4> --}}
                             <form action="">
+                                <label id="attention" for="exampleInputEmail1" style="font-weight:bold;"><span class="text-danger">*info</span> Untuk memperbaharui ringkasan obrolan dengan wakif, pastikan telepon sudah ditutup, apakah telepon sudah ditutup? <button type="button" class="btn btn-dark" id="buttonattention"> Iya</button></label>
+                                <label id="showlabel" for="exampleInputEmail1" style="display:none">perbaharui informasi !!, simpan ringkasan hasil obrolan dengan wakif</label>
+                                <div class="form-row mb-2">
+                                    <select name="status_call" id="status_call" class="custom-select" style="display: none">
+                                        <option value="SC">Success Contact</option>
+                                        <option value="NSC">Not Success Contactt</option>
+                                        <option value="SS">Salah Sambung</option>
+                                        <option value="BTP">Belum Terpasang</option>
+                                        <option value="TDH">Tidak Dapat Dihubungi, no hape tidak aktif</option>
+                                        <option value="TDR">Tidak Di Respon/Angkat</option>
+                                    </select>
+                                </div>
                                 <div class="form-group">
-                                    <label id="attention" for="exampleInputEmail1" style="font-weight:bold;"><span class="text-danger">*info</span> Untuk memperbaharui ringkasan obrolan dengan wakif, pastikan telepon sudah ditutup, apakah telepon sudah ditutup? <button type="button" class="btn btn-dark" id="buttonattention"> Iya</button></label>
-                                    <label id="showlabel" for="exampleInputEmail1" style="display:none">perbaharui informasi !!, simpan ringkasan hasil obrolan dengan wakif</label>
                                     <textarea class="form-control note" name="note" id="note" cols="30" rows="2" readonly></textarea>
                                 </div>
                                 <button id="showbutton" type="button" class="btn mb-1 btn-info updatecatatan" style="display:none">Perbaharui catatan<span class="btn-icon-right"><i class="ti-receipt"></i></span></button>
@@ -122,7 +132,7 @@
                             <div class="col-7">
                                 <h4 class="card-title">Input Donasi</h4>
                                 <div class="basic-form">
-                                    <form action="{{route('admin.simpandonasi')}}" method="post" enctype="multipart/form-data">
+                                    <form id="formdonasi" action="{{route('admin.simpandonasi')}}" method="post" enctype="multipart/form-data">
                                     @csrf
                                         <input type="hidden" value="{{$wakif->CustomerNo}}" name="kd_pelanggan">
                                         <div class="form-row">
@@ -131,7 +141,7 @@
                                                 <select name="pembayaran" id="pembayaran" class="custom-select js-example-basic-single">
                                                     <option value="">pilih pembayaran</option>
                                                     @foreach ($pembayaran as $pem)
-                                                        <option value="{{$pem->nm_kas}}">{{$pem->nm_kas}}</option>
+                                                        <option value="{{$pem->kd_kas}}">{{$pem->nm_kas}}</option>
                                                     @endforeach
                                                 </select>
                                                 </div>
@@ -151,7 +161,7 @@
                                             <div class="col">
                                                 <div class="form-group">
                                                     <div class="form-group">
-                                                        <input name="tgltra" type="text" onfocus="(this.type='date')" class="form-control"  placeholder="tanggal transaksi">
+                                                        <input name="tgltra" type="text" onfocus="(this.type='date')" class="form-control"  placeholder="tanggal komitmen">
                                                     </div>
                                                 </div>
                                             </div>
@@ -159,51 +169,24 @@
                                                 <div class="form-group">
                                                     <input type="text" name="tglset" onfocus="(this.type='date')" class="form-control"  placeholder="tanggal Setor">
                                                 </div>
-                                            </div>
+                                            </div> 
                                         </div>
                                         <div class="form-group">
-                                            <label for="">Lampirkan bukti transfer</label>
+                                            <label for="">Lampirkan bukti transfer <span class="text-danger text-small">*(Optional) bukti setelah wakif transfer</span></label>
                                             <input type="file" name="pict" class="form-control-file">
-                                        </div>
-                                        <a href="javascript:void(0)" class="addMore">
+                                        </div> 
+                                        <a href="javascript:void(0)" class="addMore btn btn-sm gradient-2 mb-3">
                                             <div class="input-group-addon "> 
-                                                <i class="fas fa-plus"> Tambah</i>
+                                                <i class="fas fa-plus"> Tambah Project</i>
                                             </div>
                                         </a>
-                                        <div class="form-row fieldGroup">
-                                                <div class="col">
-                                                    <select name="program[]" id="program" class="custom-select" required="">
-                                                        <option value="">-Program-</option>
-                                                        @foreach ($program as $prog)
-                                                        <option value="{{$prog->kd_program}}">{{$prog->nm_program}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col">
-                                                    <select name="project[]" id="project" class="custom-select" required="">
-                                                        <option value="">-Project-</option>
-                                                        @foreach ($project as $proj)
-                                                            <option value="{{$proj->kd_project}}">{{$proj->nm_project}}</option>
-                                                            
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col">
-                                                    <input type="text" name="qty[]" class="form-control" placeholder="Qty" required="">
-                                                </div>
-                                                <div class="col">
-                                                    <input type="text" name="dana[]" class="form-control" placeholder="Dana" required="">
-                                                </div>
-                                                <!-- <input type="text" name="jumlah[]" class="form-control" placeholder="Jumlah"/> -->
-                                                <a href="javascript:void(0)" class=" remove">
-                                                    <div class="input-group-addon"> 
-                                                        <i class="fas fa-trash"></i>
-                                                    </div>
-                                                </a>
+                                        <div id="tambah">
                                         </div>
-                                        <div class="buttondonasi" id="buttondonasi">
-                                            <button type="submit" class="btn btn-dark">Simpan</button>
-                                        </div>
+                                            <div class="form-row mb-2">
+                                                <label for="">Total</label>
+                                                <input type="text" name="total" id="total" class="form-control total" readonly>
+                                            </div>
+                                            <button type="submit" class="btn btn-dark buttondonasi" disabled>Simpan</button>
                                     </form>
 
                             </div>
@@ -221,31 +204,108 @@
 @push('script')
 <script>
     $(document).ready(function(){
-    //select2
-    $('#pembayaran').select2();
-    $('#program').select2();
-    $('#project').select2();
-        // membatasi jumlah inputan
-        var maxGroup = 10;
-        
+        //select2
+        $('#pembayaran').select2({ width: '100%' }); 
+        // jika tidak ada projeck/program maka tombol submit disabled 
         //melakukan proses multiple input 
         $(".addMore").click(function(){
-            if($('body').find('.fieldGroup').length < maxGroup){
-                var fieldHTML = '<div class="form-row fieldGroup">'+$(".fieldGroup").html()+'</div>';
-                $('body').find('.fieldGroup:last').after(fieldHTML);
-            }else{
-                alert('Maximum '+maxGroup+' groups are allowed.');
-            }
+            var random = Math.floor((Math.random() * 100000) + 1);
+            a = `
+            <div class="form-row">
+            <div class="col">
+                <select name="program[]" id="program`+random+`" data-id="`+random+`" class="custom-select program" required="">
+                    <option value="">-Program-</option>
+                    @foreach ($program as $prog)
+                    <option value="{{$prog->kd_program}}">{{$prog->nm_program}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col">
+                <select name="project[]" id="project`+random+`" data-id="`+random+`" class="custom-select project" required="" style="margin-left:0px !important">
+                    <option value="">-Project-</option>
+                    @foreach ($project as $proj)
+                        <option value="{{$proj->kd_project}}">{{$proj->nm_project}}</option>
+                        
+                    @endforeach
+                </select>
+            </div>
+            <div class="col">
+                <input type="text" name="qty[]" id="qty`+random+`" data-id="`+random+`" class="form-control qty" placeholder="Qty" required="">
+            </div>
+            <div class="col">
+                <input type="text" name="dana[]" class="form-control dana" id="dana`+random+`" data-id="`+random+`" placeholder="Dana" required="">
+            </div>
+                <input type="text" name="jumlah[]" class="form-control jumlah" id="jumlah`+random+`" data-id="`+random+`" placeholder="jumlah" required="" style="display:none">
+            <a href="javascript:void(0)" id="remove`+random+`" data-id="`+random+`" class="remove">
+                <div class="input-group-addon"> 
+                    <i class="fas fa-trash"></i>
+                </div>
+            </a>
+            </div>
+            `
+            $('#tambah').append(a);
+            // format RP menggunakan input mask 
+            Inputmask.extendAliases({
+                'Rupiah' : {
+                    alias: 'numeric',
+                    prefix : 'Rp ',
+                    rightAlign : false,
+                    digits : 0,
+                    autoUnmask : true,
+                    RemoveMaskOnSubmit : true,
+                    unmaskAsNumber : true,
+                    allowPlus : false,
+                    allowMinus : false,
+                    autoGrup : true,
+                    groupSeparator : ",",
+                }
+            });
+            $('.dana').inputmask('Rupiah');
+
+            // select2 
+            $('.program').select2({ width: '100%' }); 
+            $('.project').select2({ width: '100%' }); 
+            // tombol submit disabled false 
+            $('.buttondonasi').attr('disabled',false);
         });
         
         //remove fields group
-        $("body").on("click",".remove",function(){ 
-            if ($('.remove').length > 1) {
-                $(this).parents(".fieldGroup").remove();
-            } else {
-
-            }
+        $('#tambah').on('click','.remove',function(){
+            var id = $(this).attr('data-id');
+            var total = $('#total').val();
+            var jmh = $('#jumlah'+id).val();
+            var hasil = parseFloat(total) - parseFloat(jmh);
+            $('#total').val(hasil);
+            $(this).parent().remove();
         });
+
+        // update jumlah
+        $(document).on('change','.dana', function(){
+            var id = $(this).attr('data-id');
+            var dana = $('#dana'+id).val();
+            var qty = $('#qty'+id).val();
+            var jmh = qty * dana;
+            $('#jumlah'+id).val(jmh).trigger('change');
+        });
+        $(document).on('change','.qty',function(){
+            var id = $(this).attr('data-id');
+            var dana = $('#dana'+id).val();
+            var qty = $('#qty'+id).val();
+            var jmh = qty * dana;
+            $('#jumlah'+id).val(jmh).trigger('change');
+        });
+        // update total 
+        $(document).on('change','.jumlah', function(){
+            var totalSum = 0;
+            $('.jumlah').each(function(){
+                var thisVal = $(this).val();
+                if ($.isNumeric(thisVal)) {
+                    totalSum += parseFloat(thisVal);
+                }
+            });
+            $('#total').val(totalSum).trigger('change');
+        });
+        
 
         // sweetalert 
         $('.sweet-success').click(function(){
@@ -257,8 +317,12 @@
             });
             // location.reload();
         });
-        $('#buttondonasi').click(function(){
-            swal({"Berhasil !!","data berhasil di anuin","success"});
+        $('.buttondonasi').click(function(){
+            swal({
+                title:"Tunggu sebentar ya ^^",
+                text: "Donasi sedang di proses",
+                showConfirmButton: !1
+            });
         });
 
         // jquery update catatan telpon 
@@ -266,6 +330,7 @@
             var postdata = {
                 'phone' : $('#mobilephone').val(),
                 'note' : $('#note').val(),
+                'status_call' : $('#status_call').val(),
                 '_token': '{{csrf_token()}}'
             };
             $.ajax({
@@ -281,10 +346,14 @@
         // show hide atau validasi untuk telpon yang harus di tutup 
         $("#buttonattention").click(function(){
             $('#note').attr('readonly',false);
+            $('#status_call').show();
             $("#attention").hide();
             $('#showbutton').show();
             $('#showlabel').show();
         });
+
+
+
  
     });
 </script>

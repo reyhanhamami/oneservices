@@ -23,6 +23,7 @@ Route::post('/oneservice/upload','homeController@upload')->name('admin.upload');
 // data 
 Route::get('/oneservice/datawakif','dataController@datawakif')->name('admin.datawakif');
 Route::get('/datawakif/donasi/{MobilePhone}', 'dataController@donasi')->name('admin.donasi');
+Route::get('/datawakif/history/{id}', 'dataController@history')->name('admin.history');
 Route::post('/oneservice/donasi/simpan','dataController@simpandonasi')->name('admin.simpandonasi');
 // update wakif 
 Route::post('/oneservice/datawakif/wakif/wakifupdate', 'dataController@wakifupdate')->name('admin.wakifupdate');

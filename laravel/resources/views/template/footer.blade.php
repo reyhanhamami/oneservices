@@ -17,12 +17,14 @@ Main wrapper end
 <!--**********************************
 Scripts
 ***********************************-->
-<script src="{{url('public/assets/js/jquery-3.2.1.min')}}"></script>
+<script src="{{url('public/assets/js/jquery-3.2.1.min.js')}}"></script>
 <script src="{{url('public/assets/plugins/common/common.min.js')}}"></script>
 <script src="{{url('public/assets/js/custom.min.js')}}"></script>
 <script src="{{url('public/assets/js/settings.js')}}"></script>
 <script src="{{url('public/assets/js/gleek.js')}}"></script>
 <script src="{{url('public/assets/js/styleSwitcher.js')}}"></script>
+<!-- input mask -->
+<script src="{{url('public/assets/js/jquery.inputmask.js')}}"></script>
 <!-- select2  -->
 <script src="{{url('public/assets/plugins/select2/js/select2.full.min.js')}}"></script>
 <!-- select2  -->
