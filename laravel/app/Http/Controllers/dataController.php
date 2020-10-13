@@ -61,7 +61,7 @@ class dataController extends Controller
             $tdonasi->kd_kas = $request->pembayaran;
             $tdonasi->kd_pelanggan = $request->kd_pelanggan;
             $tdonasi->kd_agen = '1';
-            $tdonasi->tgl = $request->tgltra;
+            $tdonasi->tgl = $request->tglset;
             $tdonasi->total = $request->total;
             $tdonasi->sah  = 0;
             $tdonasi->kd_tkm  = NULL;
@@ -70,7 +70,7 @@ class dataController extends Controller
             $tdonasi->uid_edit = '1' ;
             $tdonasi->tgl_edit = $datetime ;
             $tdonasi->ket = 'Telefundraising' ;
-            $tdonasi->tgl_transaksi = $request->tglset;
+            $tdonasi->tgl_transaksi = $request->tgltra;
             $tdonasi->kd_sales = "";
             $tdonasi->posting = 1 ;
             $tdonasi->sumber = 'Telefundraising' ;
@@ -125,11 +125,11 @@ class dataController extends Controller
         // get last call 
         $lastcall = DB::connection('mysqltwo')->table('call_journaling')->where('phone',$phone)->orderBy('id','desc')->first();
         // ambil data pembayaran 
-        $pembayaran = DB::connection('mysql')->table('mkas')->get();
+        $pembayaran = $this->pembayaran();
         // program 
-        $program = DB::connection('mysql')->table('mprogram')->get();
+        $program = $this->program();
         // project 
-        $project = DB::connection('mysql')->table('mproject')->get();
+        $project = $this->project();
         return view('popup.cuspopup', compact(['wakif','listcall','lastcall','pembayaran','program','project']));
     }
 
@@ -163,5 +163,76 @@ class dataController extends Controller
         $phone = customer::where('CustomerNo',$id)->pluck('MobilePhone')->first();
         $nama = customer::where('CustomerNo',$id)->pluck('CustomerName')->first();
         return view('data.historywakif', compact(['donasi','phone','nama']));
+    }
+
+    public function editdonasi($kwitansi){
+        // data wakif 
+        $kd_pelanggan = donasi::where('no_kwitansi',$kwitansi)->pluck('kd_pelanggan')->first();
+        $wakif = $this->wakif($kd_pelanggan);
+        // data donasi 
+        $donasi = donasi::where('no_kwitansi',$kwitansi)->first();
+        // data donasi_dtl 
+        $donasi_dtl = donasi_dtl::where('no_kwitansi',$kwitansi)->get();
+        // ambil data pembayaran 
+        $pembayaran = $this->pembayaran();
+        // program 
+        $program = $this->program();
+        // project 
+        $project = $this->project();
+        return view('data.editdonasi',compact(['wakif','donasi','donasi_dtl','pembayaran','program','project']));
+    }
+    public function formeditdonasi($kwitansi, Request $request){
+        // delete donasi_dtl 
+        $deletedonasi = $this->deleteDonasiDtl($kwitansi);
+        // datetime 
+        $datetime = date('Y-m-d H:i:s');
+        // nama image 
+        $image = $request->hidden_image;    
+        if ($request->pict) {
+            $images = $request->file('pict');
+            // kasihnama 
+            $nama = date("Y-m-d,His").'.'.$images->getClientOriginalExtension();
+            // lokasi naro bukti 
+            $lokasi = 'C:\wamp64\www\oneservice\public\assets\images\bukti';
+            // jika folder bukti tidak ada maka buat 
+            if (!file_exists($lokasi)) {
+                mkdir($lokasi);
+            }
+            // pindahin imagenya 
+            $request->pict->move($lokasi,$nama);
+            $image = $nama;
+        } 
+        // update ke table tdonasi 
+        $update = donasi::where('no_kwitansi',$kwitansi)->update([
+            'kd_kas' => $request->pembayaran,
+            'tgl' => tanggal($request->tglset),
+            'nm_wakif' => $request->wakif,
+            'total' => $request->total,
+            'tgl_edit' => $datetime ,
+            'tgl_transaksi' => tanggal($request->tgltra),
+            'kd_cabang' => $request->cabang ,
+            'bukti' => $image ,
+        ]);
+        
+        // looping berdasarkan banyaknya milih program 
+        // insert ke table tdonasi_dtl
+        foreach ($request->program as $index => $program) {
+            $tdonasi_dtl = new donasi_dtl ;
+            $tdonasi_dtl->no_kwitansi = $kwitansi;
+            $tdonasi_dtl->kd_program = $request->program[$index];
+            $tdonasi_dtl->kd_project = $request->project[$index];
+            $tdonasi_dtl->qty = $request->qty[$index];
+            $tdonasi_dtl->jmh = $request->jumlah[$index];
+            $tdonasi_dtl->fid_program = NULL ;
+            $tdonasi_dtl->fid_sub_program = NULL ;
+            $tdonasi_dtl->fqty = NULL;
+            $tdonasi_dtl->fharga = NULL;
+            $tdonasi_dtl->frealisasi = NULL;
+            $tdonasi_dtl->fid_detail = NULL ;
+            $tdonasi_dtl->sumber = 'Fundraising' ;
+            $tdonasi_dtl->save();
+        }
+
+        return redirect()->back();
     }
 }

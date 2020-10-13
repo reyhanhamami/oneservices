@@ -32,7 +32,7 @@
                                           <td><i class="fa fa-circle-o text-success  mr-2"></i> Terdapat bukti transfer</td>  
                                         @endif
                                         <td>
-                                            <a href="" class="btn btn-sm gradient-4"><i class="fas fa-edit"> Edit</i></a>
+                                            <a href="{{route('admin.editdonasi',$don->no_kwitansi)}}" class="btn btn-sm gradient-4"><i class="fas fa-edit"> Edit</i></a>
                                         </td>
                                     </tr>
                                 

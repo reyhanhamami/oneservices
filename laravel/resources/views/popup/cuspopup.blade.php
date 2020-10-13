@@ -188,10 +188,9 @@
                                             </div>
                                             <button type="submit" class="btn btn-dark buttondonasi" disabled>Simpan</button>
                                     </form>
-
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
@@ -261,6 +260,21 @@
                 }
             });
             $('.dana').inputmask('Rupiah');
+            // format ngk boleh selain angka 
+            Inputmask.extendAliases({
+                'myQty' : {
+                    alias : 'numeric',
+                    digits: 0,
+                    rightAlign: false,
+                    autoUnmask: true,
+                    removeMaskOnSubmit: true,
+                    unmaskAsNumber: true,
+                    allowPlus: false,
+                    allowMinus: false,
+                    autoGroup: true,
+                }
+            });
+            $('.qty').inputmask('myQty');
 
             // select2 
             $('.program').select2({ width: '100%' }); 
